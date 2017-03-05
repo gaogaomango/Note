@@ -1,2 +1,5 @@
-/*@import 'styles/base.css';
-@import './components/**/*.css';*/
+/* styles */
+@import 'styles/base.css';
+
+/* Components */
+@import 'components/**/*.css';

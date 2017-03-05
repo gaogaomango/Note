@@ -1,19 +1,18 @@
-// const ExtractTextPlugin=require("extract-text-webpack-plugin");
-// const webpack = require("webpack");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
 
 module.exports = {
+  context: path.resolve(__dirname, 'src'),
   entry: {
-    js: './src/main.js',
-    // css: './src/main.css',
+    js: './main.js',
+    css: './main.css'
   },
-
   output: {
-    path: '/Users/ogaimasataka/Documents/programming/source/React/Note/public',
-    filename: 'bundle.js'
+    path: path.resolve(__dirname, 'public'),
+    filename: 'bundle.[name]',
   },
-
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -22,28 +21,29 @@ module.exports = {
           presets: ['react', 'es2015', 'react-hmre']
         },
       },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract(
+          {
+            fallback: "style-loader",
+            use: ["css-loader",
+              {
+                loader: 'postcss-loader',
+                options: {
+                  plugins: () => [
+                    require('postcss-easy-import')({ glob: true}),
+                  ]
+                },
+              },
+            ]
+          }
+        )
+      },
     ],
-    // rules: [
-    //   {
-    //     test: /\.css$/,
-    //     use: ExtractTextPlugin.extract({
-    //       fallback: "postcss-loader",
-    //       use: "css-loader"
-    //     })
-    //   }
-    // ],
   },
-  // plugins: [
-  //   new ExtractTextPlugin("bundle.css"),
-  //   new webpack.LoaderOptionsPlugin({
-  //     test: /\.css$/,
-  //     options: {
-  //       postcss: [
-  //         require('postcss-easy-import')({ glob: true }),
-  //       ],
-  //     },
-  //   })
-  // ],
+  plugins: [
+    new ExtractTextPlugin('bundle.css'),
+  ],
   devtool: 'source-map',
   devServer: {
     contentBase: './public/',
